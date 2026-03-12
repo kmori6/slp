@@ -1,0 +1,8 @@
+pre-commit:
+  commands:
+    ruff-check:
+      run: uv run ruff check --fix .
+      stage_fixed: true
+    ruff-format:
+      run: uv run ruff format .
+      stage_fixed: true

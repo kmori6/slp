@@ -1,0 +1,58 @@
+dataset:
+  data_dir: ???
+  num_proc: 8
+
+model:
+  model_name: "Qwen/Qwen3-0.6B"
+  system_prompt: "You are a expert translator. Please translate the following German text into English."
+  max_length: 1024
+  lora_rank: 8
+  lora_alpha: 32
+  lora_dropout: 0.1
+
+train:
+  dataloader:
+    train_batch_size: 2
+    valid_batch_size: 2
+    num_workers: 2
+    pin_memory: true
+  optimizer:
+    type: adamw_torch
+    lr: 2e-4
+    beta1: 0.9
+    beta2: 0.98
+    eps: 1e-9
+    weight_decay: 1e-2
+    max_grad_norm: 1.0
+  scheduler:
+    type: linear
+    warmup_steps: 4000
+  epochs: 1
+  grad_accum_steps: 32
+  log_steps: 10
+  torch_compile: false
+  out_dir: ???
+  checkpoint_path:
+
+evaluate:
+  model_path: ???
+  out_dir: ???
+  beam_size: 5
+
+hydra:
+  # https://hydra.cc/docs/tutorials/basic/running_your_app/working_directory/
+  output_subdir: null
+  # https://hydra.cc/docs/configure_hydra/logging/
+  job_logging:
+    version: 1
+    formatters:
+      simple:
+        format: "%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(levelname)s: %(message)s"
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+    root:
+      handlers: [console]
+    disable_existing_loggers: false
