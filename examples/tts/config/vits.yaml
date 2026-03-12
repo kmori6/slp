@@ -1,0 +1,109 @@
+dataset:
+  train_json_path: ???
+  valid_json_path: ???
+  sample_rate: ${model.sample_rate}
+
+tokenizer:
+  tokenizer_dir: ???
+
+model:
+  max_length: 512
+  segment_size: 32
+  hidden_size: 192
+  text_ffn_size: 768
+  text_num_heads: 2
+  text_num_layers: 6
+  text_dropout_rate: 0.1
+  text_window_size: 4
+  posterior_kernel_size: 5
+  posterior_dilation_rate: 1
+  posterior_num_layers: 16
+  posterior_dropout_rate: 0.0
+  flow_kernel_size: 5
+  flow_dilation_rate: 1
+  flow_num_blocks: 4
+  flow_num_layers: 4
+  flow_dropout_rate: 0.0
+  duration_kernel_size: 3
+  duration_dropout_rate: 0.5
+  duration_num_flows_blocks: 3
+  duration_num_prior_layers: 4
+  duration_num_condition_layers: 3
+  duration_num_posterior_layers: 4
+  duration_spline_num_bins: 10
+  duration_spline_bound: 5.0
+  speaker_size: 0
+  cond_size: 0
+  # linear spectrogram
+  fft_size: 1024
+  hop_size: 256
+  window_size: 1024
+  mel_size: 80
+  sample_rate: 22050
+  min_freq: 0.0
+  max_freq: 11025.0
+  # discriminator
+  periods: [2, 3, 5, 7, 11]
+  scales: [1]
+  # loss
+  negative_slope: 0.1
+  mel_loss_weight: 45.0
+  kl_loss_weight: 1.0
+  dur_loss_weight: 1.0
+  gen_adv_loss_weight: 1.0
+  fm_loss_weight: 2.0
+  disc_adv_loss_weight: 1.0
+
+train:
+  dataloader:
+    train_batch_size: 64
+    valid_batch_size: 64
+    num_workers: 2
+    pin_memory: true
+  optimizer:
+    generator:
+      lr: 2e-4
+      beta1: 0.8
+      beta2: 0.99
+      eps: 1e-9
+      weight_decay: 0.0
+    discriminator:
+      lr: 2e-4
+      beta1: 0.8
+      beta2: 0.99
+      eps: 1e-9
+      weight_decay: 0.0
+  scheduler:
+    generator:
+      gamma: 0.999875
+    discriminator:
+      gamma: 0.999875
+  epochs: 100
+  grad_accum_steps: 1
+  max_grad_norm: 1.0
+  log_steps: 10
+  seed: 1234
+  out_dir: ???
+  checkpoint_path:
+
+evaluate:
+  model_path: ???
+  out_dir: ???
+
+hydra:
+  # https://hydra.cc/docs/tutorials/basic/running_your_app/working_directory/
+  output_subdir: null
+  # https://hydra.cc/docs/configure_hydra/logging/
+  job_logging:
+    version: 1
+    formatters:
+      simple:
+        format: "%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(levelname)s: %(message)s"
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+    root:
+      handlers: [console]
+    disable_existing_loggers: false

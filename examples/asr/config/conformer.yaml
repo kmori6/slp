@@ -1,0 +1,85 @@
+dataset:
+  train_json_path: ???
+  valid_json_path: ???
+  test_json_path: ???
+
+tokenizer:
+  tokenizer_dir: ???
+  vocab_size: 128
+  max_length: 4096
+
+frontend:
+  fft_size: 512
+  hop_size: 160
+  window_size: 512
+  mel_size: 80
+  sample_rate: 16000
+  min_freq: 0.0
+  max_freq: 8000.0
+  num_freq_masks: 2
+  num_time_masks: 2
+  max_freq_mask_size: 30
+  max_time_mask_size: 40
+
+model:
+  hidden_size: 512
+  num_heads: 8
+  kernel_size: 31
+  num_blocks: 12
+  num_layers: 1
+  pred_size: 512
+  joint_size: 640
+  dropout_rate: 0.1
+  ignore_token_id: -100
+  min_chunk_size: 8
+  max_chunk_size: 32
+  streaming_mask_ratio: 0.6
+  ctc_loss_weight: 0.3
+
+train:
+  dataloader:
+    train_batch_size: 8
+    valid_batch_size: 8
+    num_workers: 2
+    pin_memory: true
+  optimizer:
+    lr: 1e-4
+    weight_decay: 1e-2
+  scheduler:
+    warmup_steps: 1000
+  epochs: 20
+  grad_accum_steps: 8
+  max_norm: 1.0
+  log_steps: 10
+  out_dir: ???
+  checkpoint_path:
+
+evaluate:
+  model_path: ???
+  out_dir: ???
+  beam_size: 5
+  streaming: true
+  chunk_ms: 320
+  chunk_size: 8
+  left_chunk_ms: 1280
+  left_chunk_size: 32
+  right_chunk_ms: 320
+  right_chunk_size: 8
+
+hydra:
+  # https://hydra.cc/docs/tutorials/basic/running_your_app/working_directory/
+  output_subdir: null
+  # https://hydra.cc/docs/configure_hydra/logging/
+  job_logging:
+    version: 1
+    formatters:
+      simple:
+        format: "%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(levelname)s: %(message)s"
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+    root:
+      handlers: [console]
+    disable_existing_loggers: false
